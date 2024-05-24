@@ -1,0 +1,164 @@
+MODULE main
+
+VAR
+floor : {f1,f2,f3};
+closed : boolean;
+stationary : boolean;
+state : {a,b,c,d,e,f};
+input : {c1,c2,c3};
+
+ASSIGN
+init(state):= a;
+init(floor):= f1;
+init(closed):= FALSE;
+init(stationary):= TRUE;
+
+next(state):= case
+
+    state = a & input = c1 : a;
+    state = a & input = c2 : b;
+    state = a & input = c3 : b;
+
+    state = b & input = c1 : a;
+    state = b & input = c2 : c;
+    state = b & input = c3 : e;
+
+
+    state = c & input = c1 : f;
+    state = c & input = c2 : c;
+    state = c & input = c3 : f;
+
+    state = d & input = c1 : a;
+    state = d & input = c2 : c;
+    state = d & input = c3 : e;
+
+    state = e & input = c1 : d;
+    state = e & input = c2 : d;
+    state = e & input = c3 : e;
+
+    state = f & input = c1 : a;
+    state = f & input = c2 : c;
+    state = f & input = c3 : e;
+    esac;
+
+
+next(floor):= case
+    state = a & input = c1 : f1;
+    state = a & input = c2 : f1;
+    state = a & input = c3 : f1;
+
+    state = b & input = c1 : f1;
+    state = b & input = c2 : f2;
+    state = b & input = c3 : f3;
+
+    state = c & input = c1 : f2;
+    state = c & input = c2 : f2;
+    state = c & input = c3 : f2;
+
+    state = d & input = c1 : f1;
+    state = d & input = c2 : f2;
+    state = d & input = c3 : f3;
+
+    state = e & input = c1 : f3;
+    state = e & input = c2 : f3;
+    state = e & input = c3 : f3;
+
+    state = f & input = c1 : f1;
+    state = f & input = c2 : f2;
+    state = f & input = c3 : f3;
+    esac;
+
+next(closed):= case
+    state = a & input = c1 : FALSE;
+    state = a & input = c2 : TRUE;
+    state = a & input = c3 : TRUE;
+
+    state = b & input = c1 : FALSE;
+    state = b & input = c2 : FALSE;
+    state = b & input = c3 : FALSE;
+
+    state = c & input = c1 : TRUE;
+    state = c & input = c2 : FALSE;
+    state = c & input = c3 : TRUE;
+
+    state = d & input = c1 : FALSE;
+    state = d & input = c2 : FALSE;
+    state = d & input = c3 : FALSE;
+
+    state = e & input = c1 : TRUE;
+    state = e & input = c2 : TRUE;
+    state = e & input = c3 : FALSE;
+
+    state = f & input = c1 : FALSE;
+    state = f & input = c2 : FALSE;
+    state = f & input = c3 : FALSE;
+    esac;
+
+next(stationary):= case
+    state = a & input = c1 : TRUE;
+    state = a & input = c2 : FALSE;
+    state = a & input = c3 : FALSE;
+
+    state = b & input = c1 : TRUE;
+    state = b & input = c2 : TRUE;
+    state = b & input = c3 : TRUE;
+
+    state = c & input = c1 : FALSE;
+    state = c & input = c2 : TRUE;
+    state = c & input = c3 : FALSE;
+
+    state = d & input = c1 : TRUE;
+    state = d & input = c2 : TRUE;
+    state = d & input = c3 : TRUE;
+
+    state = e & input = c1 : FALSE;
+    state = e & input = c2 : FALSE;
+    state = e & input = c3 : TRUE;
+
+    state = f & input = c1 : TRUE;
+    state = f & input = c2 : TRUE;
+    state = f & input = c3 : TRUE;
+    esac;
+
+LTLSPEC
+--NC
+--with counter examples
+--G!(floor = f1 & closed = FALSE & stationary= TRUE)  
+--G!(floor = f1 & closed = TRUE & stationary= FALSE) 
+--G!(floor = f2 & closed = FALSE & stationary= TRUE) 
+--G!(floor = f2 & closed = TRUE & stationary= FALSE) 
+--G!(floor = f3 & closed = FALSE & stationary= TRUE) 
+--G!(floor = f3 & closed = TRUE & stationary= FALSE) 
+
+--without counter examples
+--G!(floor = f1 & closed = TRUE & stationary= TRUE)
+--G!(floor = f1 & closed = FALSE & stationary= FALSE)
+--G!(floor = f2 & closed = TRUE & stationary= TRUE)
+--G!(floor = f2 & closed = FALSE & stationary= FALSE)
+--G!(floor = f3 & closed = TRUE & stationary= TRUE)
+--G!(floor = f3 & closed = FALSE & stationary= FALSE)
+
+--EC
+--G((floor=f1 & closed=FALSE & stationary=TRUE & (input=c2 | input=c3)) -> X !(floor=f1 & closed=TRUE & stationary=FALSE))
+--G((floor=f1 & closed=TRUE & stationary=FALSE & input=c1) -> X !(floor=f1 & closed=FALSE & stationary=TRUE))
+--G((floor=f1 & closed=TRUE & stationary=FALSE & input=c2) -> X !(floor=f2 & closed=FALSE & stationary=TRUE))
+--G((floor=f1 & closed=TRUE & stationary=FALSE & input=c3) -> X !(floor=f3 & closed=FALSE & stationary=TRUE))
+--G((floor=f2 & closed=FALSE & stationary=TRUE & input=c2) -> X !(floor=f2 & closed=FALSE & stationary=TRUE))
+--G((floor=f2 & closed=FALSE & stationary=TRUE & (input=c1 | input=c3)) -> X !(floor=f2 & closed=TRUE & stationary=FALSE))
+--G((floor=f2 & closed=TRUE & stationary=FALSE & (input=c2)) -> X !(floor=f2 & closed=FALSE & stationary=TRUE))
+--G((floor=f2 & closed=TRUE & stationary=FALSE & (input=c1)) -> X !(floor=f1 & closed=FALSE & stationary=TRUE))
+--G((floor=f2 & closed=TRUE & stationary=FALSE & (input=c3)) -> X !(floor=f3 & closed=FALSE & stationary=TRUE))
+--G((floor=f3 & closed=FALSE & stationary=TRUE & (input=c3)) -> X !(floor=f3 & closed=FALSE & stationary=TRUE))
+--G((floor=f3 & closed=FALSE & stationary=TRUE & (input=c3 | input=c2)) -> X !(floor=f3 & closed=TRUE & stationary=FALSE))
+--G((floor=f3 & closed=TRUE & stationary=FALSE & (input=c1)) -> X !(floor=f1 & closed=FALSE & stationary=TRUE))
+--G((floor=f3 & closed=TRUE & stationary=FALSE & (input=c2)) -> X !(floor=f2 & closed=FALSE & stationary=TRUE))
+--G((floor=f3 & closed=TRUE & stationary=FALSE & (input=c3)) -> X !(floor=f3 & closed=FALSE & stationary=TRUE))
+
+
+--LTLRULES
+--G(stationary=FALSE -> closed=TRUE)  --Whenever the elevator is not on a floor its door is closed
+--G(((input = c1 | input = c2 | input = c3) & stationary=FALSE) -> X closed=FALSE) --Whenever the elevator reaches a floor, its door opens
+--G((input = c1 & closed=FALSE & stationary=TRUE) -> F(floor = f1) & (input = c2 & closed=FALSE & stationary=TRUE) -> F(floor = f2) & (input = c3 & closed=FALSE & stationary=TRUE) -> F(floor = f3)) --When a call to a floor is made the elevator will eventually reach that floor
+G(closed=FALSE & stationary=TRUE & (input = c2 | input = c3) -> X closed=TRUE & stationary=FALSE) --The door remains open when the elevator is waiting on a floor
+
+

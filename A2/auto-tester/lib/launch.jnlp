@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp codebase="http://auto-tester.eu5.org/dist" href="launch.jnlp" spec="1.0+">
+    <information>
+        <title>Auto_Tester</title>
+        <vendor>Muhammad Javeed</vendor>
+        <homepage href=""/>
+        <description>Auto_Tester</description>
+        <description kind="short">Auto_Tester</description>
+
+
+    <offline-allowed/>
+</information>
+<security>
+<all-permissions/>
+</security>
+    <resources>
+<j2se version="1.5+"/>
+<jar eager="true" href="Auto_Tester.jar" main="true"/>
+
+
+    <jar href="lib/swing-layout-1.0.4.jar"/>
+<jar href="lib/EaSynthLookAndFeel.jar"/>
+<jar href="lib/JTattoo.jar"/>
+<jar href="lib/liquidlnf.jar"/>
+<jar href="lib/napkinlaf-alpha001.jar"/>
+<jar href="lib/tinylaf.jar"/>
+<jar href="lib/mail.jar"/>
+</resources>
+    <application-desc main-class="AutoTester.Common.MainClass">
+
+    </application-desc>
+</jnlp>
